@@ -10,7 +10,9 @@ import re
 import ntpath
 
 ROOT_PATH = 'C:\\dev\\courses\\2.131 - Advanced Instrumentation\\'
-FILE_NAME = 'Ecoli-HangingDrop-20x-Dilution-1.MOV'
+# FILE_NAME = 'Ecoli-HangingDrop-20x-Dilution-1.MOV'
+# FILE_NAME = 'Ecoli-Slide-Coverslip.MOV'
+FILE_NAME = 'Rhodosprillum-HangingDrop-3ul.MOV'
 
 tracker_types = ['BOOSTING', 'MIL', 'KCF', 'TLD', 'MEDIANFLOW', 'GOTURN']
 WIN_NAME = "2.131 Bacterial Tracker"
@@ -88,12 +90,16 @@ class TrackerUI(object):
     def next_frame(self):
         ret, frame = self._cap.read()
         self._current_frame = frame
+
+        cv2.putText(frame, "2.131 E.Coli Tracker", (100, 20),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
+
         # add any existing trackers
         current_frame = int(self._cap.get(cv2.CAP_PROP_POS_FRAMES))
         # load a live
         valid_trackers = [s for s in self._existing_trackers.keys()
                           if s <= current_frame and
-                          s + self._duration_frames > current_frame]
+                          s + self._duration_frames > current_frame-1]
 
         for t in valid_trackers:
             for (id, f, w, h) in self._existing_trackers[t]:
@@ -111,7 +117,7 @@ class TrackerUI(object):
                 except Exception as e:
                     print(e)
                     print("Id: {0}, Start Frame: {1} Current Frame: {2}, Total: {3}".format(
-                        id, t, current_frame, len(line)
+                        id, t, current_frame, len(self._loaded_trackers[id])
                     ))
         cv2.imshow(WIN_NAME, frame)
         return frame
@@ -230,7 +236,7 @@ class TrackerUI(object):
 
             if self._save_video:
                 # Display tracker type on frame
-                cv2.putText(frame, "2.131 E.Coli Tracker", (100, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
+                # cv2.putText(frame, "2.131 E.Coli Tracker", (100, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
                 # Display FPS on frame
                 cv2.putText(frame, "FPS : " + str(int(fps)), (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
                 out.write(frame)
@@ -263,6 +269,7 @@ class TrackerUI(object):
 
         self._current_frame = frame
         self._is_tracking = False
+        self.load_existing_trackers()
 
 
 
