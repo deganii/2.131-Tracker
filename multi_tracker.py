@@ -144,8 +144,8 @@ def get_tracker(tracker_type):
     if tracker_type == 'GOTURN':
         return cv2.TrackerGOTURN_create()
 
-
-def track_multi(filename, res = (1920, 1080), crop=(0,0)):
+def track_multi(filename, res = (1920, 1080),
+                start_sec=0.0, duration_sec = 10.0):
     tracker_types = ['BOOSTING', 'MIL', 'KCF', 'TLD', 'MEDIANFLOW', 'GOTURN']
 
     # MIL appears to work best...
@@ -156,8 +156,10 @@ def track_multi(filename, res = (1920, 1080), crop=(0,0)):
 
     # cap = cv2.VideoCapture(root_path + 'Rhodosprillum-HangingDrop-3ul.MOV')
     cap = cv2.VideoCapture(root_path + filename)
-
     cap_fps = cap.get(cv2.CAP_PROP_FPS)
+    current_frame = int(cap_fps * start_sec)
+    cap.set(cv2.CAP_PROP_POS_FRAMES, current_frame)
+    time = current_frame * cap_fps
 
     ret, frame = cap.read()
     resw, resh = res
@@ -196,8 +198,7 @@ def track_multi(filename, res = (1920, 1080), crop=(0,0)):
         quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
     bac_writer.writerow(['BacteriaId', 'Frame', 'Time (s)', 'X', 'Y'])
-    time = 0.0
-    count = 0
+
     while cap.isOpened():
         ret, frame = cap.read()
         frame = frame[:resh, :resw, ...]
@@ -218,7 +219,7 @@ def track_multi(filename, res = (1920, 1080), crop=(0,0)):
                 p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
                 cv2.rectangle(frame, p1, p2, (255, 0, 0), 2, 1)
 
-                bac_writer.writerow([idx, count, "{:.3f}".format(time), int(bbox[0] + bbox[2]/2),
+                bac_writer.writerow([idx, current_frame, "{:.3f}".format(time), int(bbox[0] + bbox[2]/2),
                                      int(bbox[1] + bbox[3]/2)])
         else:
             # Tracking failure
@@ -246,7 +247,7 @@ def track_multi(filename, res = (1920, 1080), crop=(0,0)):
         # Display result
         cv2.imshow("Tracking", frame)
 
-        count = count + 1
+        current_frame = current_frame + 1
         time = time + 1.0/cap_fps
 
         # Exit if ESC pressed
@@ -255,8 +256,10 @@ def track_multi(filename, res = (1920, 1080), crop=(0,0)):
     csvfile.close()
     out.release()
 
+# Goal - put in start_time seconds, get a screen
+
 # track_multi('Ecoli-Slide-Coverslip.MOV')
-track_multi('Ecoli-HangingDrop-20x-Dilution-1.MOV', res = (1024, 768), crop = (0,0))
+track_multi('Ecoli-HangingDrop-20x-Dilution-1.MOV', res = (1920, 768))
 
 # cap = cv2.VideoCapture(root_path + 'Ecoli-Slide-Coverslip.MOV')
 # ret, frame = cap.read()
