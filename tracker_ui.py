@@ -103,10 +103,16 @@ class TrackerUI(object):
                         reader = csv.reader(my_file)
                         self._loaded_trackers[id] = list(reader)
                 # now draw the appropriate rect for this tracker
-                line = self._loaded_trackers[id][current_frame - t + 1]
-                p1 = (int(int(line[3]) - w/2.), int(int(line[4]) - h/2.))
-                p2 = (int(int(line[3]) + w/2.), int(int(line[4]) + h/2.))
-                cv2.rectangle(frame, p1, p2, (255, 128, 128), 2, 1)
+                try:
+                    line = self._loaded_trackers[id][current_frame - t + 1]
+                    p1 = (int(int(line[3]) - w/2.), int(int(line[4]) - h/2.))
+                    p2 = (int(int(line[3]) + w/2.), int(int(line[4]) + h/2.))
+                    cv2.rectangle(frame, p1, p2, (255, 128, 128), 2, 1)
+                except Exception as e:
+                    print(e)
+                    print("Id: {0}, Start Frame: {1} Current Frame: {2}, Total: {3}".format(
+                        id, t, current_frame, len(line)
+                    ))
         cv2.imshow(WIN_NAME, frame)
         return frame
 
