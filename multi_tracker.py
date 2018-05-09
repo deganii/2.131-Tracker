@@ -178,7 +178,7 @@ def track_multi(filename, res = (1920, 1080),
     # Uncomment the line below to select a different bounding box
     selector_frame = frame.copy()
     bboxes = []
-    for i in range(3):
+    for i in range(20):
         bbox = cv2.selectROI(selector_frame, False)
         p1 = (int(bbox[0]), int(bbox[1]))
         p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
@@ -198,6 +198,8 @@ def track_multi(filename, res = (1920, 1080),
         quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
     bac_writer.writerow(['BacteriaId', 'Frame', 'Time (s)', 'X', 'Y'])
+    tracker_len = 0
+
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -226,7 +228,7 @@ def track_multi(filename, res = (1920, 1080),
             cv2.putText(frame, "Tracking failure detected", (100, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 255), 2)
 
         # Display tracker type on frame
-        cv2.putText(frame, "2.131 E.Coli Tracker", (100, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
+        cv2.putText(frame, "2.131 Bacterial Tracker", (100, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
 
         # Display FPS on frame
         cv2.putText(frame, "FPS : " + str(int(fps)), (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
