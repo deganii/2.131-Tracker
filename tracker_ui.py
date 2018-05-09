@@ -11,10 +11,10 @@ import ntpath
 
 ROOT_PATH = 'C:\\dev\\courses\\2.131 - Advanced Instrumentation\\'
 # FILE_NAME = 'Ecoli-HangingDrop-20x-Dilution-1.MOV'
-# FILE_NAME = 'Ecoli-Slide-Coverslip.MOV'
+FILE_NAME = 'Ecoli-Slide-Coverslip.MOV'
 # FILE_NAME = 'Rhodosprillum-HangingDrop-3ul.MOV'
 # FILE_NAME = 'HangingDrop-100ul-Nutrient-25ul-Ecoli-lRhodo-(50-50).MOV'
-FILE_NAME = 'Perturbation-Test1-PCB-Slide.MOV'
+# FILE_NAME = 'Perturbation-Test1-PCB-Slide.MOV'
 
 tracker_types = ['BOOSTING', 'MIL', 'KCF', 'TLD', 'MEDIANFLOW', 'GOTURN']
 WIN_NAME = "2.131 Bacterial Tracker"
@@ -179,7 +179,6 @@ class TrackerUI(object):
         # cap.set(cv2.CAP_PROP_POS_FRAMES, current_frame)
         time = (current_frame-1) * cap_fps
 
-
         resw = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         resh = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         res = (resw, resh)
@@ -193,7 +192,7 @@ class TrackerUI(object):
 
             fourcc = cv2.VideoWriter_fourcc(*'DIVX')
             out_fname = self._root_path + self._filename + \
-                        '.multi_track_{0}.mkv'.format(id)
+                        '.multi_track_{0}.avi'.format(id)
             out = cv2.VideoWriter(out_fname, fourcc, cap_fps, res)
 
         # Define an initial bounding box

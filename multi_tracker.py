@@ -260,8 +260,9 @@ def track_multi(filename, res = (1920, 1080),
 
 # Goal - put in start_time seconds, get a screen
 
-# track_multi('Ecoli-Slide-Coverslip.MOV')
-track_multi('Ecoli-HangingDrop-20x-Dilution-1.MOV', res = (1920, 768))
+# track_multi('Ecoli-Slide-Coverslip.MOV', res = (1920, 768))
+# track_multi('Ecoli-HangingDrop-20x-Dilution-1.MOV', res = (1920, 768))
+track_multi('Rhodosprillum-HangingDrop-3ul.MOV', res = (1920, 768))
 
 # cap = cv2.VideoCapture(root_path + 'Ecoli-Slide-Coverslip.MOV')
 # ret, frame = cap.read()
