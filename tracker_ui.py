@@ -12,7 +12,9 @@ import ntpath
 ROOT_PATH = 'C:\\dev\\courses\\2.131 - Advanced Instrumentation\\'
 # FILE_NAME = 'Ecoli-HangingDrop-20x-Dilution-1.MOV'
 # FILE_NAME = 'Ecoli-Slide-Coverslip.MOV'
-FILE_NAME = 'Rhodosprillum-HangingDrop-3ul.MOV'
+# FILE_NAME = 'Rhodosprillum-HangingDrop-3ul.MOV'
+# FILE_NAME = 'HangingDrop-100ul-Nutrient-25ul-Ecoli-lRhodo-(50-50).MOV'
+FILE_NAME = 'Perturbation-Test1-PCB-Slide.MOV'
 
 tracker_types = ['BOOSTING', 'MIL', 'KCF', 'TLD', 'MEDIANFLOW', 'GOTURN']
 WIN_NAME = "2.131 Bacterial Tracker"
@@ -91,7 +93,7 @@ class TrackerUI(object):
         ret, frame = self._cap.read()
         self._current_frame = frame
 
-        cv2.putText(frame, "2.131 E.Coli Tracker", (100, 20),
+        cv2.putText(frame, "2.131 Bacterial Tracker", (100, 20),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
 
         # add any existing trackers
@@ -114,6 +116,9 @@ class TrackerUI(object):
                     p1 = (int(int(line[3]) - w/2.), int(int(line[4]) - h/2.))
                     p2 = (int(int(line[3]) + w/2.), int(int(line[4]) + h/2.))
                     cv2.rectangle(frame, p1, p2, (255, 128, 128), 2, 1)
+                    p1x, p1y = p1
+                    cv2.putText(frame, id[:3], (p1x,p1y-20),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
                 except Exception as e:
                     print(e)
                     print("Id: {0}, Start Frame: {1} Current Frame: {2}, Total: {3}".format(
@@ -185,9 +190,10 @@ class TrackerUI(object):
         cv2.imshow(WIN_NAME, frame)
 
         if self._save_video:
+
             fourcc = cv2.VideoWriter_fourcc(*'DIVX')
             out_fname = self._root_path + self._filename + \
-                        '.multi_track_{0}.avi'.format(id)
+                        '.multi_track_{0}.mkv'.format(id)
             out = cv2.VideoWriter(out_fname, fourcc, cap_fps, res)
 
         # Define an initial bounding box
@@ -236,7 +242,7 @@ class TrackerUI(object):
 
             if self._save_video:
                 # Display tracker type on frame
-                # cv2.putText(frame, "2.131 E.Coli Tracker", (100, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
+                # cv2.putText(frame, "2.131 Bacterial Tracker", (100, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
                 # Display FPS on frame
                 cv2.putText(frame, "FPS : " + str(int(fps)), (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50, 170, 50), 2);
                 out.write(frame)
