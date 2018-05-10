@@ -34,8 +34,8 @@ def track_ecoli(regions):
     # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     fourcc = cv2.VideoWriter_fourcc(*'DIVX')
-    out = cv2.VideoWriter(root_path + 'ecoli_track1.avi',
-                          fourcc, 5.0,(640,480) )
+    # out = cv2.VideoWriter(root_path + 'ecoli_track1.avi',
+    #                       fourcc, 5.0,(640,480) )
 
     # Define an initial bounding box
     bbox = (287, 23, 86, 320)
@@ -92,7 +92,7 @@ def track_ecoli(regions):
         # multiply every pixel value by alpha
         cv2.multiply(frame,array_alpha, frame)
 
-        out.write(frame)
+        # out.write(frame)
         # out.write(frame)
 
         # Display result
@@ -102,6 +102,6 @@ def track_ecoli(regions):
         k = cv2.waitKey(1) & 0xff
         if k == 27: break
     csvfile.close()
-    out.release()
+    # out.release()
 
 track_ecoli(None)

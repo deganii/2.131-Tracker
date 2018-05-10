@@ -169,8 +169,8 @@ def track_multi(filename, res = (1920, 1080),
     # bboxes = mser_multi(frame)
 
     fourcc = cv2.VideoWriter_fourcc(*'DIVX')
-    out = cv2.VideoWriter(root_path + filename + '.multi_track1.avi',
-                          fourcc, cap_fps, res )
+    # out = cv2.VideoWriter(root_path + filename + '.multi_track1.avi',
+    #                       fourcc, cap_fps, res )
 
     # Define an initial bounding box
     # bbox = (287, 23, 86, 320)
@@ -243,7 +243,7 @@ def track_multi(filename, res = (1920, 1080),
         # cv2.multiply(frame,array_alpha, frame)
 
         # frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
-        out.write(frame)
+        # out.write(frame)
         # out.write(frame)
 
         # Display result
@@ -256,7 +256,7 @@ def track_multi(filename, res = (1920, 1080),
         k = cv2.waitKey(1) & 0xff
         if k == 27: break
     csvfile.close()
-    out.release()
+    # out.release()
 
 # Goal - put in start_time seconds, get a screen
 
