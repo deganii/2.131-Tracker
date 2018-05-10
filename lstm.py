@@ -6,7 +6,7 @@ import numpy_indexed as npi
 
 
 
-data_dim = 11
+data_dim = 2 # 11
 timesteps = 300
 num_classes = 2
 
@@ -19,9 +19,11 @@ SAMPLE_LEN = 300
 
 def load_from_path(p):
     files = glob.glob(root_path + p + '*.csv')
-    dataset = np.zeros(shape=(len(files),SAMPLE_LEN,11))
+    dataset = np.zeros(shape=(len(files),SAMPLE_LEN,data_dim))
     for idx, f in enumerate(files):
-        dataset[idx] = np.genfromtxt(f,delimiter=',')
+        dataset[idx] = np.genfromtxt(f,delimiter=',')[:,5:7]
+        # subtract the first element from the rest
+        dataset[idx] = dataset[idx] - dataset[idx][0]
     return dataset
 
 rhodo = load_from_path(rhodo_path)
@@ -32,6 +34,22 @@ ecoli_labels = np.ones(ecoli.shape[0])
 
 # split both into training and test
 data = np.concatenate((rhodo,ecoli))
+
+# data = data /data.sum(axis=1, keepdims=True)
+# data_range = 2*(data - np.max(data))/-np.ptp(data)-1
+# data_mean = np.mean(data)
+
+data_min = data.min()
+data_max = data.max()
+
+data = 2* (data - data_min) / (data_max - data_min) - 1
+
+# import sklearn.preprocessing as sk
+# scaler = sk.MinMaxScaler(feature_range=(-1.0, 1.0), ax)
+# scaler = scaler.fit(data)
+# data = scaler.transform(data)
+
+
 labels = np.concatenate((rhodo_labels,ecoli_labels))
 # num_labels = label_values.shape[0]
 
@@ -116,11 +134,15 @@ model = Sequential()
 model.add(LSTM(32, return_sequences=True,
                input_shape=(train.shape[1], train.shape[2])))  # returns a sequence of vectors of dimension 32
 model.add(LSTM(32, return_sequences=True))  # returns a sequence of vectors of dimension 32
+
+model.add(LSTM(32, return_sequences=True))
+model.add(LSTM(32, return_sequences=True))
+model.add(LSTM(32, return_sequences=True))
 model.add(LSTM(32))  # return a single vector of dimension 32
 model.add(Dense(num_classes, activation='softmax'))
 
 model.compile(loss='categorical_crossentropy',
-              optimizer='rmsprop',
+              optimizer=keras.optimizers.Adam(lr=0.001),
               metrics=['accuracy'])
 
 model.summary()
@@ -129,7 +151,7 @@ csv_logger = CSVLogger(root_path+'training.csv',
                        append=True, separator=',')
 
 hist  = model.fit(train, train_labels,
-          batch_size=64, epochs=10,
+          batch_size=64, epochs=100,
           validation_split=0.2, callbacks=[csv_logger])
 
 model.save(root_path + 'lstm.hdf5')
